@@ -50,8 +50,8 @@ module Dhaka
       # are LexerRun#current_lexeme and LexerRun#create_token.
       def for_pattern(pattern, &blk)
         source = case pattern
-                   when String : pattern
-                   when Regexp : pattern.source
+                   when String then pattern
+                   when Regexp then pattern.source
                  end
         items[source] = LexerSpecificationItem.new(source, priority, blk)
         self.priority += 1

@@ -18,7 +18,7 @@ module Dhaka
     #
     # See the arithmetic precedence grammar in the test suites for an example.
     def method_missing(production_name, expansion, options = {}, &blk)
-      expansion_symbols = expansion.collect {|name| @grammar.symbols[name]}
+      expansion_symbols = (expansion.respond_to?('lines') ? expansion.lines : expansion).collect {|name| @grammar.symbols[name]}
       production_args   = [@symbol, expansion_symbols, production_name.to_s, blk, @grammar.production_index]
       if precedence_symbol_name = options[:prec] 
         production_args << @grammar.symbol_for_name(precedence_symbol_name).precedence

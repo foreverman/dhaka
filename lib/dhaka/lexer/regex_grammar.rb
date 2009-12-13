@@ -32,13 +32,13 @@ module Dhaka
         positive_set                  %w| [ SetContents ] |                     do OrNode.new(*child_nodes[1].collect{|char| LeafNode.new(char)}) end
         negative_set                  %w| [ ^ SetContents ] |                   do OrNode.new(*(ALL_CHARACTERS - child_nodes[2]).collect {|char| LeafNode.new(char)}) end
 
-        CLASSES.each do |char, expansion|
+        Dhaka::LexerSupport::CLASSES.each do |char, expansion|
           send("character_class_#{char}", ['\\', char]) do
             OrNode.new(*CLASSES[char].collect {|c| LeafNode.new(c)})
           end 
         end
 
-        OPERATOR_CHARACTERS.each do |char, method_name|
+        Dhaka::LexerSupport::OPERATOR_CHARACTERS.each do |char, method_name|
           send(method_name, ['\\', char]) do
             LeafNode.new(char)
           end
@@ -73,7 +73,7 @@ module Dhaka
       end
       
       for_symbol('LowercaseLetter') do
-        LOWERCASE_LETTERS.each do |letter|
+        Dhaka::LexerSupport::LOWERCASE_LETTERS.each do |letter|
           send("lower_char_letter_#{letter}", letter) do
             letter
           end
@@ -81,7 +81,7 @@ module Dhaka
       end
       
       for_symbol('UppercaseLetter') do
-        UPPERCASE_LETTERS.each do |letter|
+        Dhaka::LexerSupport::UPPERCASE_LETTERS.each do |letter|
           send("upper_case_letter_#{letter}", letter) do
             letter
           end
@@ -89,7 +89,7 @@ module Dhaka
       end
 
       for_symbol('Digit') do
-        DIGITS.each do |digit|
+        Dhaka::LexerSupport::DIGITS.each do |digit|
           send("digit_#{digit}", digit) do
             digit
           end
@@ -97,7 +97,7 @@ module Dhaka
       end
 
       for_symbol('Whitespace') do
-        WHITESPACE.each do |whitespace_char|
+        Dhaka::LexerSupport::WHITESPACE.each do |whitespace_char|
           send("whitespace_#{whitespace_char[0]}", whitespace_char) do
             whitespace_char
           end
@@ -105,7 +105,7 @@ module Dhaka
       end
       
       for_symbol('Symbol') do
-        SYMBOLS.each do |symbol_char|
+        Dhaka::LexerSupport::SYMBOLS.each do |symbol_char|
           send("symbol_char_#{symbol_char[0]}", symbol_char) do
             symbol_char
           end
@@ -113,12 +113,12 @@ module Dhaka
       end
 
       for_symbol('SetCharacter') do
-        (ALL_CHARACTERS - SET_OPERATOR_CHARACTERS).each do |char|
+        (Dhaka::LexerSupport::ALL_CHARACTERS - Dhaka::LexerSupport::SET_OPERATOR_CHARACTERS).each do |char|
           send("set_character_#{char[0]}", char) do
             char
           end
         end
-        SET_OPERATOR_CHARACTERS.each do |char|
+        Dhaka::LexerSupport::SET_OPERATOR_CHARACTERS.each do |char|
           send("set_operator_character_#{char[0]}", ['\\', char]) do
             char
           end

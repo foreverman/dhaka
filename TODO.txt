@@ -1,0 +1,19 @@
+* improve hashing
+
+* use dhaka/runtime where appropriate and update documentation
+
+* opt_? macro, zero_or_more, one_or_more
+
+* previous_token method on lexer_run
+
+* conflict summary
+
+* Fix error handling
+
+* use call instead of instance_eval on code blocks?
+
+* Tag releases in subversion
+
+* Minimize DFA states
+
+* Add ^, $, {} to regex grammar, and other escape characters

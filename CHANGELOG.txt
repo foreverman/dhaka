@@ -1,0 +1,40 @@
+2.2.1
+* Added a 'dhaka/runtime' require target that has a much smaller memory footprint.
+* Applied Rick Olson's patch for adding default actions to TokenizerStates.
+
+2.2.0
+* Parsers are now generated much faster.
+* LexerSpecification#for_symbol method now handles escaping automatically on metacharacters (thanks to Florian Gross for suggesting this).
+* LexerSpecification#for_pattern accepts Ruby regular expression literals in addition to strings (thanks to Bruce Williams and Florian Gross for suggesting this).
+* Lookahead operator now supported in the regular expression grammar.
+* Carriage returns now supported in the regular expression grammar.
+* Evaluator no longer throws exceptions for undefined rules unless the :raise_error option is set to true.
+
+2.1.0
+* Can now generate lexers from a regex specification and compile them to Ruby
+* Fixed compiled parser bug that made symbol names containing backslashes impossible
+* Compiled parsers much smaller
+* Grammars can now optionally include actions to be performed when reducing - makes building ASTs much easier
+
+2.0.1
+* Major cleanup of code and using cleaner %w notation for productions (both thanks to Marcel Molina, Jr)
+* ParseSuccessResult delegates to its parse_tree so can now call Evaluator#evaluate directly on the result.
+* Test coverage is now closer to complete.
+
+2.0.0
+* Deprecated ParseSuccessResult#syntax_tree. Use ParseSuccessResult#parse_tree from now on (it's the proper name for it).
+* Tokenizer#accumulator eliminated. 
+* Added a Tokenizer#create_token factory method. Use this to create tokens from now on.
+* Tokenizer#tokenize now returns either a TokenizerSuccessResult or TokenizerErrorResult, does not throw an exception on encountering unexpected tokens.
+* Token now contains an attribute input_position, the index of the source input that it was created from.
+* ParseErrorResult now contains the unexpected_token itself, not the unexpected_token_index.
+* Tokenizer returns the END_SYMBOL_TOKEN for empty input.
+* Parser returns success result with nil parse_tree for an empty token stream.
+* RDoc updated with most important classes and example code.
+
+1.0.0
+* Evaluator#evaluate now accepts a syntax tree for evaluation. The initialize method no longer accepts the syntax tree. It is used instead for injecting dependencies.
+* Evaluator#evaluate must now be explicitly called on child nodes when specifying evaluation rules.
+
+
+

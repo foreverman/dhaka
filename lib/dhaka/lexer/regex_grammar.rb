@@ -98,6 +98,7 @@ module Dhaka
 
       for_symbol('Whitespace') do
         Dhaka::LexerSupport::WHITESPACE.each do |whitespace_char|
+          #TODO: what is the smart way to get character code in both ruby1.8 and 1.9?
           send("whitespace_#{whitespace_char[0].respond_to?('ord') ? whitespace_char[0].ord : whitespace_char[0]}", whitespace_char) do
             whitespace_char
           end

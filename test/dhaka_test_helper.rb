@@ -5,6 +5,7 @@ end
 require File.dirname(__FILE__) + '/fake_logger'
 
 require 'test/unit'
+require 'rubygems'
 
 begin
   require 'mocha'

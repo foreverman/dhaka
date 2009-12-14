@@ -4,43 +4,43 @@ module Dhaka
     class RegexGrammar < Dhaka::Grammar
 
       for_symbol(Dhaka::START_SYMBOL_NAME) do
-        regex                         %w| Disjunction |                         do RootNode.new(child_nodes[0], AcceptingNode.new) end
-        regex_with_lookahead          %w| Disjunction / Disjunction |           do RootNode.new(LookaheadNode.new(child_nodes[0], child_nodes[2]), LookaheadAcceptingNode.new) end
+        regex                         %w| Disjunction |                         do Dhaka::LexerSupport::RootNode.new(child_nodes[0], Dhaka::LexerSupport::AcceptingNode.new) end
+        regex_with_lookahead          %w| Disjunction / Disjunction |           do Dhaka::LexerSupport::RootNode.new(LookaheadNode.new(child_nodes[0], child_nodes[2]), Dhaka::LexerSupport::LookaheadAcceptingNode.new) end
       end
       
       for_symbol('Disjunction') do                                   
-        disjunction                   %w| Alternative \| Disjunction |          do OrNode.new(child_nodes[0], child_nodes[2]) end
+        disjunction                   %w| Alternative \| Disjunction |          do Dhaka::LexerSupport::OrNode.new(child_nodes[0], child_nodes[2]) end
         alternative                   %w| Alternative |                         do child_nodes[0] end
       end                                                   
                                                           
       for_symbol('Alternative') do                            
-        concatenation                 %w| Alternative Term |                    do CatNode.new(child_nodes[0], child_nodes[1]) end
+        concatenation                 %w| Alternative Term |                    do Dhaka::LexerSupport::CatNode.new(child_nodes[0], child_nodes[1]) end
         term                          %w| Term |                                do child_nodes[0] end
       end                                                   
                                                           
       for_symbol('Term') do                             
-        zero_or_more                  %w| Atom * |                              do ZeroOrMoreNode.new(child_nodes[0]) end
-        one_or_more                   %w| Atom + |                              do OneOrMoreNode.new(child_nodes[0]) end
-        zero_or_one                   %w| Atom ? |                              do ZeroOrOneNode.new(child_nodes[0]) end
+        zero_or_more                  %w| Atom * |                              do Dhaka::LexerSupport::ZeroOrMoreNode.new(child_nodes[0]) end
+        one_or_more                   %w| Atom + |                              do Dhaka::LexerSupport::OneOrMoreNode.new(child_nodes[0]) end
+        zero_or_one                   %w| Atom ? |                              do Dhaka::LexerSupport::ZeroOrOneNode.new(child_nodes[0]) end
         atom                          %w| Atom |                                do child_nodes[0] end
       end                                                   
                                                           
       for_symbol('Atom') do                        
         group                         %w| ( Disjunction ) |                     do child_nodes[1] end
-        char                          %w| Character |                           do LeafNode.new(child_nodes[0]) end 
-        anything                      %w| . |                                   do OrNode.new(*(ALL_CHARACTERS - ["\r", "\n"]).collect {|char| LeafNode.new(char)}) end
-        positive_set                  %w| [ SetContents ] |                     do OrNode.new(*child_nodes[1].collect{|char| LeafNode.new(char)}) end
-        negative_set                  %w| [ ^ SetContents ] |                   do OrNode.new(*(ALL_CHARACTERS - child_nodes[2]).collect {|char| LeafNode.new(char)}) end
+        char                          %w| Character |                           do Dhaka::LexerSupport::LeafNode.new(child_nodes[0]) end 
+        anything                      %w| . |                                   do Dhaka::LexerSupport::OrNode.new(*(Dhaka::LexerSupport::ALL_CHARACTERS - ["\r", "\n"]).collect {|char| Dhaka::LexerSupport::LeafNode.new(char)}) end
+        positive_set                  %w| [ SetContents ] |                     do Dhaka::LexerSupport::OrNode.new(*child_nodes[1].collect{|char| Dhaka::LexerSupport::LeafNode.new(char)}) end
+        negative_set                  %w| [ ^ SetContents ] |                   do Dhaka::LexerSupport::OrNode.new(*(Dhaka::LexerSupport::ALL_CHARACTERS - child_nodes[2]).collect {|char| Dhaka::LexerSupport::LeafNode.new(char)}) end
 
         Dhaka::LexerSupport::CLASSES.each do |char, expansion|
           send("character_class_#{char}", ['\\', char]) do
-            OrNode.new(*CLASSES[char].collect {|c| LeafNode.new(c)})
+            Dhaka::LexerSupport::OrNode.new(*Dhaka::LexerSupport::CLASSES[char].collect {|c| Dhaka::LexerSupport::LeafNode.new(c)})
           end 
         end
 
         Dhaka::LexerSupport::OPERATOR_CHARACTERS.each do |char, method_name|
           send(method_name, ['\\', char]) do
-            LeafNode.new(char)
+            Dhaka::LexerSupport::LeafNode.new(char)
           end
         end
       end
@@ -98,7 +98,7 @@ module Dhaka
 
       for_symbol('Whitespace') do
         Dhaka::LexerSupport::WHITESPACE.each do |whitespace_char|
-          send("whitespace_#{whitespace_char[0]}", whitespace_char) do
+          send("whitespace_#{whitespace_char[0].respond_to?('ord') ? whitespace_char[0].ord : whitespace_char[0]}", whitespace_char) do
             whitespace_char
           end
         end
@@ -106,7 +106,7 @@ module Dhaka
       
       for_symbol('Symbol') do
         Dhaka::LexerSupport::SYMBOLS.each do |symbol_char|
-          send("symbol_char_#{symbol_char[0]}", symbol_char) do
+          send("symbol_char_#{symbol_char[0].respond_to?('ord') ? symbol_char[0].ord : symbol_char[0]}", symbol_char) do
             symbol_char
           end
         end
@@ -114,12 +114,12 @@ module Dhaka
 
       for_symbol('SetCharacter') do
         (Dhaka::LexerSupport::ALL_CHARACTERS - Dhaka::LexerSupport::SET_OPERATOR_CHARACTERS).each do |char|
-          send("set_character_#{char[0]}", char) do
+          send("set_character_#{char[0].respond_to?('ord') ? char[0].ord : char[0]}", char) do
             char
           end
         end
         Dhaka::LexerSupport::SET_OPERATOR_CHARACTERS.each do |char|
-          send("set_operator_character_#{char[0]}", ['\\', char]) do
+          send("set_operator_character_#{char[0].respond_to?('ord') ? char[0].ord : char[0]}", ['\\', char]) do
             char
           end
         end

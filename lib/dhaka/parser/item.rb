@@ -18,16 +18,17 @@ module Dhaka
     end
     
     def to_s(options = {})
+      
       expansion_symbols = production.expansion.collect {|symbol| symbol.name}
       if next_item_index < expansion_symbols.size
         expansion_symbols.insert(next_item_index, '->')
       else
         expansion_symbols << '->'
       end
-      expansion_repr = expansion_symbols.join(' ')
 
+      expansion_repr = expansion_symbols.join(' ')
       item = "#{production.symbol} ::= #{expansion_repr}"
-      item << " [#{lookaheadset.collect.sort}]" unless options[:hide_lookaheads]
+      item << " [#{lookaheadset.collect.sort.join('')}]"  unless options[:hide_lookaheads]
       item
     end
    

@@ -39,7 +39,7 @@ class TestLexer < Test::Unit::TestCase
     eval(lexer.compile_to_ruby_source_as(:SomeLexer))
     input = "these are words a z zz caPITALIZED word \r    
     this is a float 12.00 an integer 134 a float without a leading digit .2335 another word1"
-    results =  SomeLexer.lex(input).collect
+    results =  SomeLexer.lex(input).collect{|token| token}
     assert_equal(
     ["word these",
      "word are",
@@ -80,7 +80,7 @@ class TestLexer < Test::Unit::TestCase
 
   def test_lexer_with_greedy_character_consumption
     lexer = Dhaka::Lexer.new(LexerSpec)
-    results = lexer.lex("<html></html>this is a word").collect
+    results = lexer.lex("<html></html>this is a word").collect{|token| token}
     assert_equal(["tag <html></html>",
      "word this",
      "word is",
@@ -123,7 +123,7 @@ class TestLexer < Test::Unit::TestCase
   def test_lexer_with_regexes_that_use_lookaheads
     lexer = Dhaka::Lexer.new(LexerWithLookaheadsSpec)
     eval(lexer.compile_to_ruby_source_as(:LexerWithTrickyLookaheads))
-    results = LexerWithTrickyLookaheads.lex("234 : :whatever :1934 abcd ::").collect
+    results = LexerWithTrickyLookaheads.lex("234 : :whatever :1934 abcd ::").collect{|token| token}
     assert_equal(["number 234",
      "a colon",
      "a symbol qualifier",

@@ -5,7 +5,7 @@ module Dhaka
 
       for_symbol(Dhaka::START_SYMBOL_NAME) do
         regex                         %w| Disjunction |                         do Dhaka::LexerSupport::RootNode.new(child_nodes[0], Dhaka::LexerSupport::AcceptingNode.new) end
-        regex_with_lookahead          %w| Disjunction / Disjunction |           do Dhaka::LexerSupport::RootNode.new(LookaheadNode.new(child_nodes[0], child_nodes[2]), Dhaka::LexerSupport::LookaheadAcceptingNode.new) end
+        regex_with_lookahead          %w| Disjunction / Disjunction |           do Dhaka::LexerSupport::RootNode.new(Dhaka::LexerSupport::LookaheadNode.new(child_nodes[0], child_nodes[2]), Dhaka::LexerSupport::LookaheadAcceptingNode.new) end
       end
       
       for_symbol('Disjunction') do                                   

@@ -22,7 +22,7 @@ class ChittagongLexerSpecification < Dhaka::LexerSpecification
   
   #lipi:keywords
   for_pattern('\w+') do
-    if KEYWORDS.include? current_lexeme.value
+    if ChittagongLexerSpecification::KEYWORDS.include? current_lexeme.value
       create_token current_lexeme.value
     else
       create_token 'word_literal'
